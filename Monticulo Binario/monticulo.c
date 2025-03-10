@@ -184,6 +184,26 @@ Monticulo contruirMonticulo(int elementos[], int n){
 
 //Ejercicio 2
 void heapsort(Monticulo *m){
+    int i;
 
-    
+    //ordenar con minimo en raiz
+    for(i=m->tamanno/2; i>=1; i--){
+        filtradoDescendente(m, i);  
+    }
+
+    int tam_original=m->tamanno;
+    tipoElemento temp;
+    for(i=m->tamanno; i>1; i--){
+        //intercambias el mas pequeño(raiz) con el mas grande (ultimo hijo)
+        //y siguiente raiz
+        temp = m->elemento[1];
+        m->elemento[1] = m->elemento[i];
+        m->elemento[i] = temp;
+        m->tamanno--;   //va quitando los ordenados
+        filtradoDescendente(m,1);
+    }
+
+    m->tamanno=tam_original;
 }
+
+

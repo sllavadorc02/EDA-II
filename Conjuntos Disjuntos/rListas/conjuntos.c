@@ -69,10 +69,6 @@ void crea(particion P){
 //cuando encuentras uno, devuelves el indice del vector
 //comprobar que es representanet de él mismo
 tipoConjunto buscar(tipoElemento x, particion P){
-  if(P[x].primero->elemento==x){
-    return x;
-  }
-
   tipoCelda *aux;
   for(int i=0; i<MAXIMO; i++){
     if(P[i].primero!=NULL){
@@ -115,19 +111,19 @@ int unir(tipoConjunto x, tipoConjunto y, particion P){
 int liberarParticion(particion P){
 
   for(int i=0; i<MAXIMO; i++){
-    if(P[i].ultimo!=NULL){
-      free(P[i].ultimo);
-      P[i].ultimo=NULL;
-      
-    }
     
     while(P[i].primero !=NULL){
+      tipoCelda *temp=P[i].primero;
       P[i].primero=P[i].primero->sig;
-      free(P[i].primero);
+      free(temp);
     }
 
     P[i].primero=NULL;
+    P[i].ultimo=NULL;
+      
+    
+    
   }
 
-  return 0;
+  return 1;
 }

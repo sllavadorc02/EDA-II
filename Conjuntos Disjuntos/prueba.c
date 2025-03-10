@@ -69,9 +69,9 @@ int main(){
 	#ifdef LISTAS
 	verClaseEquivalencia(5,P);
 	if(liberarParticion(P)){
-		printf("Liberando Particion...\n");
+		printf("\nParticion liberada...\n");
 	}else{
-		printf("No se pudo liberar la particion...\n");
+		printf("\nError al liberar la particion...\n");
 	}
 	#endif
 

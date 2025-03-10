@@ -37,3 +37,4 @@ Monticulo contruirMonticulo(int elementos[], int n);
 
 /*Ejercicio 2*/
 void heapsort(Monticulo *m);
+
