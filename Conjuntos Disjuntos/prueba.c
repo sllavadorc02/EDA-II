@@ -29,7 +29,7 @@ int main(){
 	else 
    		printf(" No puede formase la clase de equivalencia {7,0,13,15}\n");
 
-	if (unir(8,12,P) && unir(3,8,P) && unir(2,3,P)) 
+	if (unir(8,12,P) && unir(3,8,P) && unir(2,3,P)) //con altura falla 
 		printf( "Formada clase de equivalencia {2,3,8,12}\n");
 	else 
 		printf(" No puede formase la clase de equivalencia {2,3,8,12}\n");
