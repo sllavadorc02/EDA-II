@@ -39,7 +39,7 @@ int unir(tipoConjunto x, tipoConjunto y, particion P){
 
 
 
-/*
+
 // POR TAMAÑO
 void crea(particion P){
     for (int i = 0; i < MAXIMO; i++)
@@ -72,7 +72,7 @@ int unir(tipoConjunto x, tipoConjunto y, particion P){
         P[y]=x;
         
     }else{
-        P[y]+=P[y];   
+        P[y]+=P[x];   
         P[x]=y;
         
     }
@@ -81,11 +81,12 @@ int unir(tipoConjunto x, tipoConjunto y, particion P){
 
 }
 
-*/
+
+
 
 
 // ALTURA
-
+/*
 void crea(particion P){
     for (int i = 0; i < MAXIMO; i++)
     {
@@ -94,14 +95,16 @@ void crea(particion P){
 
 }
 
+
 tipoConjunto buscar(tipoElemento x, particion P){
 
     while(P[x]>=0){
         x=P[x];
     }
 
-    return x;
+    return x;  
 }
+
 
 int unir(tipoConjunto x, tipoConjunto y, particion P){
     if(P[x]>=0 || P[y]>=0){
@@ -109,11 +112,14 @@ int unir(tipoConjunto x, tipoConjunto y, particion P){
     }
 
 
-    if(P[x]>=P[y]){
-        P[x]--;
-        P[y]=x;
-    }else{
+    if(P[x]>P[y]){
+        
         P[x]=y;
+    }else{
+        if(P[x]==P[y]){
+            P[x]--;
+        }
+        P[y]=x;
     }
 
 
@@ -122,10 +128,17 @@ int unir(tipoConjunto x, tipoConjunto y, particion P){
 }
 
 
+tipoConjunto buscarCompresion(tipoElemento x, particion P){
 
+    if(P[x]>=0){
+        P[x]=buscar(P[x],P);
+        return P[x];
+    }else{
+        return x;
+    }
+}
 
-
-
+*/
 
 //
 // Función auxiliar para ver contenido de Partición 
