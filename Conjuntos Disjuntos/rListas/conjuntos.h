@@ -8,13 +8,11 @@ typedef int tipoConjunto;
 typedef struct tipoCelda {
 	tipoElemento elemento;
 	struct tipoCelda * sig;
-	} tipoCelda;
-
+} tipoCelda;
 
 typedef struct {
 	tipoCelda * primero , *ultimo;
-	} tipoLista;
-
+} tipoLista;
 
 typedef tipoLista particion[MAXIMO];
 

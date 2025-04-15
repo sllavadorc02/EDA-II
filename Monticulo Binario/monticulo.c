@@ -50,7 +50,7 @@ void filtradoAscendente(Monticulo *m, int i){
 }
 
 
-void filtradoDescendente(Monticulo *m, int i){
+void filtradoDescendente(Monticulo *m, int i){  //está mal
     if(m==NULL || m->tamanno==0){
         return;
     }
@@ -91,7 +91,7 @@ int eliminarMinimo(Monticulo *m, tipoElemento *minimo){
     int finFiltrado=0;
     while(2*hueco <= m->tamanno && !finFiltrado){
         hijo=2*hueco;
-        if(hijo < m->tamanno){
+        if(hijo+1 < m->tamanno){
             if(m->elemento[hijo+1].clave < m->elemento[hijo].clave){
                 hijo++; //coge el hijo menor
             }
@@ -175,6 +175,10 @@ Monticulo contruirMonticulo(int elementos[], int n){
         m.elemento[i+1].clave=elementos[i];
     }
 
+    for(i=n/2; i>=1; i--){
+        filtradoDescendente(m,i);
+    }
+
     return m;
 
 }
@@ -185,9 +189,9 @@ Monticulo contruirMonticulo(int elementos[], int n){
 //Ejercicio 2
 void heapsort(Monticulo *m){
     int i;
-
+    
     //ordenar con minimo en raiz
-    for(i=m->tamanno/2; i>=1; i--){
+    for(i=m->tamanno/2; i>=1; i--){ //construir monticulo
         filtradoDescendente(m, i);  
     }
 
