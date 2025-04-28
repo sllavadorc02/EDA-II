@@ -161,6 +161,8 @@ int ordenTop2(tipoGrafo *grafo)
 //(mas adelante guardar la arista, es decir, guardando los dos vertices struct con dos vertices)
 //mas adelante modificar el algoritmo
 
+
+/*a) NO PONDERADOS*/
 //sin mejora
 void caminos1(int vInicio, tipoGrafo *g){
   pArco p;
@@ -281,14 +283,38 @@ void dijkstra2(int vInicio, tipoGrafo *g){
 
 /* Interpretación de los algoritmos ¡Secuencia de vértices en caminos mínimos y distancias !!! */
 
-int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrao *g){
+int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrafo *g){
+  int distanciaMin=g[0].distancia;
+  int indice=0;
+  for(int i=0; i<N; i++){
+    if((g[i].distancia < distanciaMin) && !g[i].alcanzado){
+      distanciaMin=g[i].distancia;
+      indice=i;
+    }
+  }
 
+  return indice;
 }
 
 
 int costeyTrayectoria(int vIni, int vFin, tipoGrafo *g){
+  if(vIni < 1 || vIni > g->orden || vFin < 1 || vFin > g->orden){
+    printf("Vertices invalidos");
+    return -1;
+  }
 
+  if(g->directorio[vFin].distancia == INF){
+    printf("No hay camino desde %d hasta %d\n", vIni, vFin);
+    return -1;
+  }
+
+  printf("Distancia minima de %d a %d: %d \n", vIni, vFin, g->directorio[vFin].distancia);
+  //hacer lo de la cola y ¿costes?
+  return g->directorio[vFin].distancia;
 }
+
+
+
 void todosCaminosMin(int vIni, tipoGrafo *g){
 
 }
