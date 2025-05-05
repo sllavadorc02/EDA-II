@@ -9,7 +9,7 @@ typedef struct{
 } tipoElementoM;
 
 typedef struct
-{ tipoElemento elemento[MAXIMO];
+{ tipoElementoM elemento[MAXIMO];
     int tamanno;
 } Monticulo;
 

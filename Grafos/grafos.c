@@ -9,6 +9,9 @@
 #include "cola.h"
 #include "monticulo.h"
 #include "grafos.h"
+#include "pila.h"
+
+
 /**********************************************
 / Inicia correctamente directorio de vertices *
 ***********************************************/
@@ -169,17 +172,17 @@ void caminos1(int vInicio, tipoGrafo *g){
   int v,w;
   int distanciaActual;
   iniciar(g);
-  g.directorio[vInicio].distancia=0;
-  for(distanciaActual=0; distanciaActual<g.orden; distanciaActual++){
-    for(v=1; v<=g.orden; v++){
-      if(!(g.directorio[v].alcanzado) && (g.directorio[v].distancia==distanciaActual)){
-        g.directorio[v].alcanzado=1;
-        p=g.directorio[v].lista;
+  g->directorio[vInicio].distancia=0;
+  for(distanciaActual=0; distanciaActual<g->orden; distanciaActual++){
+    for(v=1; v<=g->orden; v++){
+      if(!(g->directorio[v].alcanzado) && (g->directorio[v].distancia==distanciaActual)){
+        g->directorio[v].alcanzado=1;
+        p=g->directorio[v].lista;
         while(p!=NULL){
           w=p->v;
-          if(g.directorio[w].distancia=INF){
-            g.directorio[w].distancia=g.directorio[v].distancia + 1;
-            g.directorio[w].anterior=v;
+          if(g->directorio[w].distancia=INF){
+            g->directorio[w].distancia=g->directorio[v].distancia + 1;
+            g->directorio[w].anterior=v;
 
           }
           p=p->sig;
@@ -190,23 +193,23 @@ void caminos1(int vInicio, tipoGrafo *g){
 
 }
 
-//con mejora
+//con mejora (cola)
 void caminos2(int vInicio, tipoGrafo *g){
   pArco p;
   int v,w;
   Cola c;
   iniciar(g);
-  g.directorio[vInicio].distancia=0;
+  g->directorio[vInicio].distancia=0;
   colaCreaVacia(&c);
   colaInserta(&c, vInicio);
   while(!colaVacia(&c)){
     v=colaSuprime(&c);
-    p=g.directorio[v].lista;
+    p=g->directorio[v].lista;
     while(p!=NULL){
       w=p->v;
-      if(g.directorio[w].distancia=INF){
-        g.directorio[w].distancia=g.directorio[v].distancia + 1;
-        g.directorio[w].anterior=v;
+      if(g->directorio[w].distancia=INF){
+        g->directorio[w].distancia=g->directorio[v].distancia + 1;
+        g->directorio[w].anterior=v;
         colaInserta(&c, w);
 
       }
@@ -227,17 +230,17 @@ void dijkstra1(int vInicio, tipoGrafo *g){
   int distanciaActual;
   int i;
   iniciar(g);
-  g.directorio[vInicio].distancia=0;
-  for(i=1; i<=g.orden; i++){
+  g->directorio[vInicio].distancia=0;
+  for(i=1; i<=g->orden; i++){
     v=buscarVerticeDistanciaMinimaNoAlcanzado(g);
-    g.directorio[v].alcanzado=1;
-    p=g.directorio[v].lista;
+    g->directorio[v].alcanzado=1;
+    p=g->directorio[v].lista;
     while(p!=NULL){
       w=p->v;
-      if(!g.directorio[w].alcanzado){
-        if(g.directorio[v].distancia + p->peso < g.directorio[w].distancia){
-          g.directorio[w].distancia=g.directorio[v].distancia+p->peso;
-          g.directorio[w].anterior=v;
+      if(!g->directorio[w].alcanzado){
+        if(g->directorio[v].distancia + p->peso < g->directorio[w].distancia){
+          g->directorio[w].distancia=g->directorio[v].distancia+p->peso;
+          g->directorio[w].anterior=v;
 
         }
       }
@@ -247,13 +250,14 @@ void dijkstra1(int vInicio, tipoGrafo *g){
 
 }
 
-//con mejora
+//con mejora (monticulo)
 void dijkstra2(int vInicio, tipoGrafo *g){
   Monticulo m;
+  pArco p;
   tipoElementoM x;
   int v, w;
   iniciar(g);
-  g.directorio[vInicio].distancia=0;
+  g->directorio[vInicio].distancia=0;
   iniciaMonticulo(&m);
   x.clave=0;
   x.informacion=vInicio;
@@ -261,16 +265,16 @@ void dijkstra2(int vInicio, tipoGrafo *g){
   while(!vacioMonticulo(m)){
     int err=eliminarMinimo(&m, &x);
     v=x.informacion;
-    if(!g.directorio[v].alcanzado){
-      g.directorio[v].alcanzado=1;
-      p=g.directorio[v].lista;
+    if(!g->directorio[v].alcanzado){
+      g->directorio[v].alcanzado=1;
+      p=g->directorio[v].lista;
       while(p!=NULL){
         w=p->v;
-        if(!g.directorio[w].alcanzado){
-          if(g.directorio[v].distancia+p->peso < g.directorio[w].distancia){
-            g.directorio[w].distancia=g.directorio[v].distancia+ p->peso;
-            g.directorio[w].anterior=v;
-            x.clave=g.directorio[w].distancia;
+        if(!g->directorio[w].alcanzado){
+          if(g->directorio[v].distancia+p->peso < g->directorio[w].distancia){
+            g->directorio[w].distancia=g->directorio[v].distancia+ p->peso;
+            g->directorio[w].anterior=v;
+            x.clave=g->directorio[w].distancia;
             x.informacion=w;
             insertar(x, &m);
           }
@@ -284,11 +288,11 @@ void dijkstra2(int vInicio, tipoGrafo *g){
 /* Interpretación de los algoritmos ¡Secuencia de vértices en caminos mínimos y distancias !!! */
 
 int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrafo *g){
-  int distanciaMin=g[0].distancia;
+  int distanciaMin=g->directorio[0].distancia;
   int indice=0;
   for(int i=0; i<N; i++){
-    if((g[i].distancia < distanciaMin) && !g[i].alcanzado){
-      distanciaMin=g[i].distancia;
+    if((g->directorio[i].distancia < distanciaMin) && !g->directorio[i].alcanzado){
+      distanciaMin=g->directorio[i].distancia;
       indice=i;
     }
   }
@@ -308,16 +312,137 @@ int costeyTrayectoria(int vIni, int vFin, tipoGrafo *g){
     return -1;
   }
 
-  printf("Distancia minima de %d a %d: %d \n", vIni, vFin, g->directorio[vFin].distancia);
-  //hacer lo de la cola y ¿costes?
+  printf("Distancia minima de %d a %d (coste: %d) \n", vIni, vFin, g->directorio[vFin].distancia);
+  Pila p;
+  pilaCreaVacia(&p);
+  int actual=vFin;
+  while(actual!=vIni){
+    pilaInserta(&p, actual);
+    actual=g->directorio[actual].anterior;
+  }
+
+  printf("Recorrido: ");
+  if(actual==vIni){
+    printf("%d ", vIni);
+    while(!pilaVacia(&p)){
+      int elem=pilaSuprime(&p);
+      printf("-> %d ", elem);
+    }
+    printf("\n");
+
+  }else{
+    printf("Error: El grafo no fue correctamente inicializado (ejecuta Dijkstra/BFS primero).\n");
+  }
+
+
   return g->directorio[vFin].distancia;
 }
 
 
 
 void todosCaminosMin(int vIni, tipoGrafo *g){
+  if(vIni<1 || vIni>g->orden){
+    printf("Vertice inicial invalido...\n");
+    return;
+  }
+
+  printf("\n----Caminos minimos de %d----\n", vIni);
+  for(int vFin=1; vFin<=g->orden; vFin++){
+    if(vFin==vIni){
+      continue;
+    }
+
+    int coste=costeyTrayectoria(vIni, vFin, g);
+
+  }
 
 }
+
+
+/***************/
+/* Ejercicio 4 */
+/***************/
+
+
+
+//escriobir kruskal es pasa de pseudocodigo a c
+//campo anterior es el q vamos a interpretar luego en el arbol de expansion
+//lo que nos proporciona prim es el vertice anterior y el peso
+//reservar paraa un nuevo grafo y de arustas que conectan los vertices en el arbol de expansion
+//las que tiene un conste minimo
+//cada arista tiene que salir dos veces!! porque no son dirigidos
+//se hace 
+//añadidos a prim
+//arbolExp=(tipoGrafo*)calloc(1, sizeof())
+/*
+for(i=arbolExp->orde; i>0; i--){
+  if(g->directorio[i].anterior){
+    x.informacion.u=i;
+    x.informacion.v=g->directorio[i].anterior
+    x.clave=g->directorio[i].peso;
+    aceptarArista(x,arbolExp);
+  }
+}
+
+
+//aceptar añadiendo al fin
+//se hace con u y con v
+aux=g->directorio[x.informacion.u].lista;
+while(aux!=NULL){
+  ant=aux;
+  aux=aux->sig;
+}
+
+if(ant=NULL){
+  g->directorio(x.informacion.u]).lista=arista
+}
+
+*/
+//tambien se puede hacer añadiendo al final
+
+
+//iniciarmonticulo()
+//reserva para el directorio de vertices
+//y añadir las aristas, a las listas de adyacencia (aristas son origen destino, aparecen en dos listas de adyacencia)
+//EXAMEN: pregunta relacionada con el monticulo, que tipo debe de ser (la clave para propiedad de orde es el orden de la arista)
+//funciones accesorias para interoretar los resultados (clave::::: peso y anterior)
+
+//compilar ir añadiendo los objetos correspondientes que hemos ido usando para poder
+//tipomonticulo hay que modificarlo
+//ejecucion del tiempo de ejecucion del algoritmo de Prim
+//como influye al usar el monticulo
+
+
+tipoGrafo * prim1(tipoGrafo *g){
+  pArco p;
+  int v,w;
+  int i;
+  iniciar(g);
+  g->directorio[vInicio].peso=0;
+  for(i=1; i<=g->orden; i++){
+    v=buscarVerticeCosteMinimoNoAlcanzado(g);
+    g->directorio[v].alcanzado=1;
+    p=g->directorio[v].lista;
+    while(p!=NULL){
+      w=p->vertice;
+      if(!g->directorio[w].alcanzado){
+        if(g->directorio[w].peso > p->peso){
+          g->directorio[w].peso=p->peso;
+          g->directorio[w].anterior=v;
+        }
+      }
+      p=p->sig;
+    }
+  }
+  return g;
+}
+
+
+tipoGrafo * prim2(tipoGrafo *grafo);
+int buscarVerticeCosteMinimoNoAlcanzado(tipoGrafo *g);
+tipoGrafo * kruskal(tipoGrafo *grafo);
+
+
 
 /******************************************************************************/
 /* Recorrido en PROFUNDIDAD de un grafo. ¡CUIDADO! Depende del vertice inicial y del tipo de grafo */

@@ -63,7 +63,7 @@ void dijkstra2(int vInicio, tipoGrafo *g);
 
 /* Interpretación de los algoritmos ¡Secuencia de vértices en caminos mínimos y distancias !!! */
 
-int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrao *g);
+int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrafo *g);
 int costeyTrayectoria(int vIni, int vFin, tipoGrafo *g); // Un camino!!
 void todosCaminosMin(int vIni, tipoGrafo *g);		 // Todos!!
 

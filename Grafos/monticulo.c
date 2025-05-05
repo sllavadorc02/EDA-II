@@ -175,8 +175,8 @@ Monticulo contruirMonticulo(int elementos[], int n){
         m.elemento[i+1].clave=elementos[i];
     }
 
-    for(i=n/2; i>=1; i--){
-        filtradoDescendente(m,i);
+    for(int i=n/2; i>=1; i--){
+        filtradoDescendente(&m,i);
     }
 
     return m;
