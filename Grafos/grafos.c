@@ -62,7 +62,7 @@ void profundidadMejorado(int v_inicio,tipoGrafo *g)
 }
 void amplitudMejorado(int v_inicio,tipoGrafo *g)
 {
-  //buscar el primer vertice que no ha sido alcanzado (0), invoca la funcion profundidad ese que no se ha visitado
+  //buscar el primer vertice que no ha sido alcanzado (0), invoca la funcion amplitud ese que no se ha visitado
   //todos los que tienen un 0 en alzanzado
   iniciar(g);
   amplitud(v_inicio, g);
@@ -134,6 +134,42 @@ int ordenTop2(tipoGrafo *grafo)
   //orden se inicia a uno y cada uno que econtremos con grado de entrada y topologico a 0 incrementa y asigna el orrdem
   //si hay un ciclo el bucle mientras acaba antes, orden tendrá un 
   //si orden==orden grafo perfe, si no pues ha habido ciclo
+  int v, w;
+  pArco p;
+  Cola c;
+  iniciar(grafo);
+  colaCreaVacia(&c);
+  for(v=1; v<=grafo->orden; v++){
+    if(grafo->directorio[v].gradoEntrada==0){
+      colaInserta(&c,v);
+    }
+  }
+
+  int orden=1;
+  while(!colaVacia(&c)){
+    v=colaSuprime(&c);
+    grafo->directorio[v].ordenTop=orden;
+    orden++;
+    p=grafo->directorio[v].lista;
+    while(p!=NULL){
+      w=p->v;
+      grafo->directorio[w].gradoEntrada=grafo->directorio[w].gradoEntrada-1;
+      if(grafo->directorio[w].gradoEntrada==0){
+        colaInserta(&c,w);
+      }
+      p=p->sig;
+    }
+
+  }
+  
+  if(orden==grafo->orden){
+    return 0;
+  }else{
+    return -1;
+  }
+
+
+
 }
 
 
@@ -175,12 +211,12 @@ void caminos1(int vInicio, tipoGrafo *g){
   g->directorio[vInicio].distancia=0;
   for(distanciaActual=0; distanciaActual<g->orden; distanciaActual++){
     for(v=1; v<=g->orden; v++){
-      if(!(g->directorio[v].alcanzado) && (g->directorio[v].distancia==distanciaActual)){
+      if((!g->directorio[v].alcanzado) && (g->directorio[v].distancia==distanciaActual)){
         g->directorio[v].alcanzado=1;
         p=g->directorio[v].lista;
         while(p!=NULL){
           w=p->v;
-          if(g->directorio[w].distancia=INF){
+          if(g->directorio[w].distancia==INF){
             g->directorio[w].distancia=g->directorio[v].distancia + 1;
             g->directorio[w].anterior=v;
 
@@ -207,7 +243,7 @@ void caminos2(int vInicio, tipoGrafo *g){
     p=g->directorio[v].lista;
     while(p!=NULL){
       w=p->v;
-      if(g->directorio[w].distancia=INF){
+      if(g->directorio[w].distancia==INF){
         g->directorio[w].distancia=g->directorio[v].distancia + 1;
         g->directorio[w].anterior=v;
         colaInserta(&c, w);
@@ -233,6 +269,9 @@ void dijkstra1(int vInicio, tipoGrafo *g){
   g->directorio[vInicio].distancia=0;
   for(i=1; i<=g->orden; i++){
     v=buscarVerticeDistanciaMinimaNoAlcanzado(g);
+    if(v==-1){
+      break;
+    }
     g->directorio[v].alcanzado=1;
     p=g->directorio[v].lista;
     while(p!=NULL){
@@ -249,6 +288,7 @@ void dijkstra1(int vInicio, tipoGrafo *g){
   }
 
 }
+
 
 //con mejora (monticulo)
 void dijkstra2(int vInicio, tipoGrafo *g){
@@ -285,12 +325,13 @@ void dijkstra2(int vInicio, tipoGrafo *g){
   }
 }
 
+
 /* Interpretación de los algoritmos ¡Secuencia de vértices en caminos mínimos y distancias !!! */
 
 int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrafo *g){
-  int distanciaMin=g->directorio[0].distancia;
-  int indice=0;
-  for(int i=0; i<N; i++){
+  int distanciaMin=INF;
+  int indice=-1;
+  for(int i=1; i<=g->orden; i++){
     if((g->directorio[i].distancia < distanciaMin) && !g->directorio[i].alcanzado){
       distanciaMin=g->directorio[i].distancia;
       indice=i;
@@ -412,7 +453,7 @@ if(ant=NULL){
 //ejecucion del tiempo de ejecucion del algoritmo de Prim
 //como influye al usar el monticulo
 
-
+/*
 tipoGrafo * prim1(tipoGrafo *g){
   pArco p;
   int v,w;
@@ -441,7 +482,7 @@ tipoGrafo * prim1(tipoGrafo *g){
 tipoGrafo * prim2(tipoGrafo *grafo);
 int buscarVerticeCosteMinimoNoAlcanzado(tipoGrafo *g);
 tipoGrafo * kruskal(tipoGrafo *grafo);
-
+*/
 
 
 /******************************************************************************/

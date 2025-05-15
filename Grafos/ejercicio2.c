@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "grafos.h"
-//#include "monticulo.h"
+#include "monticulo.h"
 
 
 tipoGrafo *creaGrafoT26();
@@ -11,7 +11,7 @@ tipoGrafo *creaGrafoT26();
 int main(void)
 { tipoGrafo *gT26;
   int ciclico, i;
-  //Monticulo m;
+  Monticulo m;
   
 	gT26 = creaGrafoT26();
 	verGrafo(gT26);
@@ -25,24 +25,23 @@ int main(void)
 	printf("\nAmplitud : ");
 	amplitudMejorado(6,gT26);
 	verGrafo(gT26);
-  ciclico = ordenTop1(gT26);
+  ciclico = ordenTop2(gT26);
   verGrafo(gT26);
 	if (ciclico==-1) 
 		printf("\nGrafo ciclico ¡ No es posible la ordenación topológica !");
-/*	else 	// utilización del TAD Monticulo 
+	else 	// utilización del TAD Monticulo 
 	 	// y función heapsort para ver el orden topológico
 	{ for (i=1; i<=gT26->orden;i++) {
 		m.elemento[i].clave = gT26->directorio[i].ordenTop;
 		m.elemento[i].informacion = i;
 		}
 	   m.tamanno=gT26->orden;
-	   heapsort(&m);
 	   printf("\nOrden Topológico\n");
 	   for (i=gT26->orden;i>0; i--)
 	   printf("\n%d v%d\n",	m.elemento[i].clave, 				
 	   			m.elemento[i].informacion);		   
 	}
-	*/
+	
 //	liberarListas(g);
 //	free(g);
 
