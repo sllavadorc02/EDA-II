@@ -10,6 +10,7 @@
 #include "monticulo.h"
 #include "grafos.h"
 #include "pila.h"
+#include "conjuntos.h"
 
 
 /**********************************************
@@ -199,9 +200,9 @@ int ordenTop2(tipoGrafo *grafo)
 //informacion -> destino de esa arista
 //(mas adelante guardar la arista, es decir, guardando los dos vertices struct con dos vertices)
 //mas adelante modificar el algoritmo
+/*
 
-
-/*a) NO PONDERADOS*/
+//a) NO PONDERADOS
 //sin mejora
 void caminos1(int vInicio, tipoGrafo *g){
   pArco p;
@@ -228,6 +229,7 @@ void caminos1(int vInicio, tipoGrafo *g){
   }
 
 }
+
 
 //con mejora (cola)
 void caminos2(int vInicio, tipoGrafo *g){
@@ -258,7 +260,7 @@ void caminos2(int vInicio, tipoGrafo *g){
 }
 
 
-/* b) PONDERADOS */
+//b) PONDERADOS 
 //sin mejora
 void dijkstra1(int vInicio, tipoGrafo *g){
   pArco p;
@@ -326,7 +328,7 @@ void dijkstra2(int vInicio, tipoGrafo *g){
 }
 
 
-/* Interpretación de los algoritmos ¡Secuencia de vértices en caminos mínimos y distancias !!! */
+//Interpretación de los algoritmos ¡Secuencia de vértices en caminos mínimos y distancias !!! 
 
 int buscarVerticeDistanciaMinimaNoAlcanzado(tipoGrafo *g){
   int distanciaMin=INF;
@@ -400,6 +402,8 @@ void todosCaminosMin(int vIni, tipoGrafo *g){
 }
 
 
+*/ 
+
 /***************/
 /* Ejercicio 4 */
 /***************/
@@ -453,19 +457,20 @@ if(ant=NULL){
 //ejecucion del tiempo de ejecucion del algoritmo de Prim
 //como influye al usar el monticulo
 
-/*
+
 tipoGrafo * prim1(tipoGrafo *g){
   pArco p;
   int v,w;
   int i;
   iniciar(g);
+  int vInicio=1;
   g->directorio[vInicio].peso=0;
   for(i=1; i<=g->orden; i++){
     v=buscarVerticeCosteMinimoNoAlcanzado(g);
     g->directorio[v].alcanzado=1;
     p=g->directorio[v].lista;
     while(p!=NULL){
-      w=p->vertice;
+      w=p->v;
       if(!g->directorio[w].alcanzado){
         if(g->directorio[w].peso > p->peso){
           g->directorio[w].peso=p->peso;
@@ -480,8 +485,163 @@ tipoGrafo * prim1(tipoGrafo *g){
 
 
 tipoGrafo * prim2(tipoGrafo *grafo);
-int buscarVerticeCosteMinimoNoAlcanzado(tipoGrafo *g);
-tipoGrafo * kruskal(tipoGrafo *grafo);
+
+int buscarVerticeCosteMinimoNoAlcanzado(tipoGrafo *g) {
+  int minPeso = INF;
+  int minVertice = -1;
+  for (int i = 1; i <= g->orden; i++) {
+    if (!g->directorio[i].alcanzado && g->directorio[i].peso < minPeso) {
+      minPeso = g->directorio[i].peso;
+      minVertice = i;
+    }
+  }  
+  return minVertice;  // -1 si no hay vértices no alcanzados
+}
+
+
+
+tipoGrafo * kruskal(tipoGrafo *grafo){
+  Monticulo A;
+  int numAristasAceptadas;
+  particion B;
+  tipoConjunto conjuntoU, conjuntoV;
+  tipoElementoM x;
+  tipoGrafo *arbolExp=(tipoGrafo *)malloc(sizeof(tipoGrafo));
+  arbolExp->orden=grafo->orden;
+  for (int i = 1; i <= grafo->orden; i++) {
+    arbolExp->directorio[i].lista = NULL;  // Inicializar listas de adyacencia.
+  }
+
+  crea(B);
+
+  //construirMonticuloDeAristas(grafo, &A);
+  iniciaMonticulo(&A);
+  for (int u = 1; u <= grafo->orden; u++) {
+    pArco arista = grafo->directorio[u].lista;
+    while (arista != NULL) {
+      int v = arista->v;
+      int peso = arista->peso;
+      if (u < v) {
+        tipoElementoM elemento;
+        elemento.clave = peso;
+        elemento.informacion.u = u;
+        elemento.informacion.v = v;
+        insertar(elemento, &A);  
+      }
+
+      arista = arista->sig;
+    }
+  }
+
+  numAristasAceptadas=0;
+  while(numAristasAceptadas < grafo->orden-1){
+    int err=eliminarMinimo(&A, &x);
+    if(err!=0){
+      break;
+    }
+    conjuntoU=buscar(x.informacion.u, B);
+    conjuntoV=buscar(x.informacion.v, B);
+    if(conjuntoU != conjuntoV){
+      unir(conjuntoU, conjuntoV, B);
+      numAristasAceptadas++;
+
+      //aceptarArista(x, &arbolExp);
+      pArco nuevaArista = (pArco)malloc(sizeof(arco));
+      nuevaArista->v = x.informacion.v;
+      nuevaArista->peso = x.clave;
+      nuevaArista->sig = NULL;
+      
+      if (arbolExp->directorio[x.informacion.u].lista == NULL) {
+        arbolExp->directorio[x.informacion.u].lista = nuevaArista;
+      } else {
+        pArco temp = arbolExp->directorio[x.informacion.u].lista;
+        while (temp->sig != NULL) {
+          temp = temp->sig;
+        }
+        temp->sig = nuevaArista;
+      }
+
+     
+      pArco nuevaAristaInversa = (pArco)malloc(sizeof(arco));
+      nuevaAristaInversa->v = x.informacion.u;
+      nuevaAristaInversa->peso = x.clave;
+      nuevaAristaInversa->sig =  NULL;
+      
+      if (arbolExp->directorio[x.informacion.v].lista == NULL) {
+        arbolExp->directorio[x.informacion.v].lista = nuevaAristaInversa;
+      } else {
+        pArco temp = arbolExp->directorio[x.informacion.v].lista;
+        while (temp->sig != NULL) {
+          temp = temp->sig;
+        }
+        temp->sig = nuevaAristaInversa;
+      }
+
+    }
+
+  }
+
+  return arbolExp;
+
+}
+
+
+/*
+void construirMonticuloDeAristas(tipoGrafo *grafo, Monticulo *A) {
+  iniciaMonticulo(A);
+
+  for (int u = 1; u <= grafo->orden; u++) {
+    pArco arista = grafo->directorio[u].lista;
+
+    while (arista != NULL) {
+      int v = arista->v;
+      int peso = arista->peso;
+
+      if (u < v) {
+        tipoElementoM elemento;
+        elemento.clave = peso;
+        elemento.informacion.u = u;
+        elemento.informacion.v = v;
+        insertar(elemento, A);  
+      }
+
+      arista = arista->sig;
+    }
+  }
+}
+
+
+void aceptarArista(tipoElementoM x, tipoGrafo *arbolExp) {
+  pArco nuevaArista = (pArco)malloc(sizeof(arco));
+  nuevaArista->v = x.informacion.v;
+  nuevaArista->peso = x.clave;
+  nuevaArista->sig = NULL;
+
+  if (arbolExp->directorio[x.informacion.u].lista == NULL) {
+    arbolExp->directorio[x.informacion.u].lista = nuevaArista;
+  } else {
+    pArco temp = arbolExp->directorio[x.informacion.u].lista;
+    while (temp->sig != NULL) {
+      temp = temp->sig;
+    }
+    temp->sig = nuevaArista;
+  }
+
+  pArco nuevaAristaInversa = (pArco)malloc(sizeof(arco));
+  nuevaAristaInversa->v = x.informacion.u;
+  nuevaAristaInversa->peso = x.clave;
+  nuevaAristaInversa->sig = NULL;
+
+  if (arbolExp->directorio[x.informacion.v].lista == NULL) {
+    arbolExp->directorio[x.informacion.v].lista = nuevaAristaInversa;
+  } else {
+    pArco temp = arbolExp->directorio[x.informacion.v].lista;
+    while (temp->sig != NULL) {
+      temp = temp->sig;
+    }
+    temp->sig = nuevaAristaInversa;
+  }
+}
 */
 
 
@@ -547,7 +707,7 @@ void verGrafo(tipoGrafo *g)
        printf(" %2d |",g->directorio[i].anterior);
        p = g->directorio[i].lista;
        while (p != NULL)
-       {   printf(" ->%2d", p->v);	// Grafos no ponderados
+       {   printf(" ->%2d, %2d", p->v, p->peso);	// Grafos no ponderados
            //printf(" ->%2d, %2d", p->v, p->peso); // Grafos ponderados
            p = p->sig;
        }

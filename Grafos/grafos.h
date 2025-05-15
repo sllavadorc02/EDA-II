@@ -6,9 +6,9 @@
  */
 #ifndef GRAFOS_H
 #define GRAFOS_H
-
   #define N 20
   #define INF 999999
+  
 
   typedef struct tagarco
   { int v;
@@ -70,8 +70,10 @@ void todosCaminosMin(int vIni, tipoGrafo *g);		 // Todos!!
 /* Ejercicio 4: Árbol de Expansión en grafos NO dirigidos */
 /* a) Prim  ¡ Algoritmo e interpretación del resultado!!! */
 tipoGrafo * prim1(tipoGrafo *grafo);
+int buscarVerticeCosteMinimoNoAlcanzado(tipoGrafo *g);
 tipoGrafo * prim2(tipoGrafo *grafo);
 /* c) Kruskal*/
 tipoGrafo * kruskal(tipoGrafo *grafo);
+
 
 #endif

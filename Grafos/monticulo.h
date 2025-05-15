@@ -1,7 +1,10 @@
 #define MAXIMO 100
 
 typedef int tipoClave ;
-typedef int tipoInfo ;
+typedef  struct{
+  int u;
+  int v;
+}tipoInfo;
 
 typedef struct{ 
    tipoClave clave;
